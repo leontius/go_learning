@@ -1,44 +1,29 @@
 package test
 
 import (
-	"log"
-	"strings"
 	"testing"
+
+	"github.com/leontius/string"
 )
 
 func TestString(t *testing.T) {
-	var (
-		a     = "字符串"
-		b     = "\" 转义"
-		hello = ""
-	)
+	// 打印
+	string.Printf()
 
-	log.Printf("%s,%s", a, b)
+	// 比较
+	string.Compare()
 
-	hello = "hello, world!"
+	// 指定去重
+	string.Compare()
 
-	h := hello[0]
-	log.Printf("%+v", h)
-	log.Printf("%s", string(h))
+	// 字符串分割
+	string.Split()
 
-	h = byte(01)
-	if !strings.Contains(hello, string(h)) {
-		log.Print("var hello not contains h")
-	}
+	// 字符串比较
+	string.EqualFold()
 
-	comp := strings.Compare(hello, string(h))
-	if comp != 0 {
-		log.Printf("result = %d ,var hello not compare h", comp)
-	}
-
-	hello = strings.Trim(hello, "h")
-	log.Printf("%s", hello)
-
-	var sArray = strings.Split(hello, ",")
-	log.Printf("%v", sArray[0])
-
-	// print char
-	for i := 0; i < len(hello); i++ {
-		log.Printf("%v", string(hello[i]))
-	}
+	// 包含
+	string.Contains()
+	string.ContainsAny()
+	string.ContainsRune()
 }
