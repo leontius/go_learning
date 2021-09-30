@@ -8,7 +8,7 @@ import (
 )
 
 func TestFetch(t *testing.T) {
-	os.Args[2] = "https://www.sina.com"
-	os.Args[1] = "https://www.baidu.com"
+	os.Args[1] = "https://www.sina.com"
+	os.Args[2] = "https://bing.com"
 	fetch.New()
 }

@@ -14,9 +14,11 @@ func New() {
 	start := time.Now()
 	ch := make(chan string)
 	for _, url := range os.Args[1:] {
+		// start a goroutine
 		go fetch(url, ch)
 	}
 	for range os.Args[1:] {
+		// receive from channel ch
 		fmt.Println(<-ch)
 	}
 	fmt.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
@@ -24,15 +26,19 @@ func New() {
 
 func fetch(url string, ch chan<- string) {
 	start := time.Now()
-
 	resp, err := http.Get(url)
 	if err != nil {
+		// send error to channel ch
 		ch <- fmt.Sprint(err)
 		return
 	}
 
+	if resp != nil {
+		defer resp.Body.Close()
+	}
+
 	nbytes, err := io.Copy(ioutil.Discard, resp.Body)
-	defer resp.Body.Close()
+
 	if err != nil {
 		ch <- fmt.Sprintf("while reading %s: %v", url, err)
 		return
@@ -40,12 +46,9 @@ func fetch(url string, ch chan<- string) {
 
 	b, err := httputil.DumpResponse(resp, true)
 	if err != nil {
-		ch <- fmt.Sprintf("while reading %s: %v", url, err)
+		ch <- fmt.Sprintf("dump response error %s: %v err: %v", url, resp, err)
 	}
 
-	date := resp.Header.Clone().Get("Date")
-	ch <- fmt.Sprint(string(date))
-
 	secs := time.Since(start).Seconds()
-	ch <- fmt.Sprintf("%.2fs  %7d  %s %s", secs, nbytes, url, string(b))
+	ch <- fmt.Sprintf("%.2fs  %7d byte  %s \n%s", secs, nbytes, url, string(b))
 }
