@@ -70,6 +70,19 @@ func newInt2() *int {
 	return &dummy
 }
 
+var global *int
+
+func t() {
+	// x变量必须在堆上分配，因为它在函数退出后依然可以通过包一级的global变量找到
+	x := 1
+	global = &x
+}
+
+func g() {
+	y := new(int)
+	*y = 1
+}
+
 func main() {
 	// zero value
 	zeroValue()
@@ -99,4 +112,11 @@ func main() {
 	// 特殊情况：如果两个类型都是空的，也就是说类型的大小是0，有可能返回相同地址
 	j, k := new(int), new(int)
 	fmt.Println(j == k)
+
+	// g函数没有变量回收逃逸，函数执行完y变量不可达即释放
+	g()
+
+	// t函数中x变量逃逸了，内存无法进行回收
+	t()
+	fmt.Println(*global, &global)
 }

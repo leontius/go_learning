@@ -6,18 +6,17 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
-	"os"
 	"time"
 )
 
-func New() {
+func New(urls []string) {
 	start := time.Now()
 	ch := make(chan string)
-	for _, url := range os.Args[1:] {
+	for _, url := range urls {
 		// start a goroutine
 		go fetch(url, ch)
 	}
-	for range os.Args[1:] {
+	for range urls {
 		// receive from channel ch
 		fmt.Println(<-ch)
 	}
