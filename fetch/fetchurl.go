@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func New(urls []string) {
+func New(urls ...string) {
 	start := time.Now()
 	ch := make(chan string)
 	for _, url := range urls {
