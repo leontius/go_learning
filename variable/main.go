@@ -83,6 +83,18 @@ func g() {
 	*y = 1
 }
 
+var s2 = string("s2")
+
+func demo1() {
+	var s string
+	{
+		// 局部变量会隐藏外部变量
+		s2 := string("internal s2")
+		fmt.Println(s, s2)
+	}
+	fmt.Println(s2)
+}
+
 func main() {
 	// zero value
 	zeroValue()
@@ -119,4 +131,6 @@ func main() {
 	// t函数中x变量逃逸了，内存无法进行回收
 	t()
 	fmt.Println(*global, &global)
+
+	demo1()
 }

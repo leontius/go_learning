@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"regexp"
+)
 
 var (
 	// nil切片, 和 nil 相等, 一般用来表示一个不存在的切片
@@ -22,6 +26,16 @@ var (
 	// 有0个元素的切片，len为0，cap为3
 	i = make([]int, 0, 3)
 )
+
+func findPhoneNumber(filename string) []byte {
+	b, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println(err)
+	}
+	b = regexp.MustCompile("[0-9]+").Find(b)
+	// 将感兴趣的数据复制到一个新的切片中，切断对原始数据的依赖。
+	return append([]byte{}, b...)
+}
 
 func main() {
 	fmt.Println(a, b)
@@ -72,4 +86,54 @@ func main() {
 	// 从i个位置插入切片
 	a = append(a[:i], append([]int{1, 2, 3}, a[i:]...)...)
 	fmt.Println(a)
+
+	x = 123
+	// 切片扩展一个空间
+	a = append(a, 0)
+	// a[i:]向后移动1个位置
+	copy(a[i+1:], a[i:])
+	// 在i的位置设置新添加的元素
+	a[i] = x
+	fmt.Println(a)
+
+	n := []int{9, 8, 7, 6}
+	// 为x切片扩展足够的空间
+	a = append(a, n...)
+	// a[i:]向后移动len(x)个位置
+	copy(a[i+len(n):], a[i:])
+	// 复制添加新的切片
+	copy(a[i:], n)
+	fmt.Println(a)
+
+	a = []int{1, 2, 3, 4, 5, 6}
+	// 删除尾部一个元素
+	a = a[:len(a)-1]
+	fmt.Println(a)
+	// 删除尾部n个元素
+	x = 2
+	a = a[:len(a)-x]
+	fmt.Println(a)
+
+	a = []int{1, 2, 3, 4, 5, 6}
+	// 删除开头一个元素
+	a = a[1:]
+	fmt.Println(a)
+	// 删除开头n个元素
+	a = a[x:]
+	fmt.Println(a)
+
+	a = []int{1, 2, 3}
+	// 删除开头1个元素
+	a = append(a[:0], a[1:]...)
+	fmt.Println(a)
+	// 删除开头n个元素
+	a = append(a[:0], a[x:]...)
+	fmt.Println(a)
+
+	a = []int{1, 2, 3, 4, 5}
+	// copy函数删除开头一个元素
+	a = a[:copy(a, a[1:])]
+	fmt.Println(a)
+
+	findPhoneNumber("/tmp/1")
 }
